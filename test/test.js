@@ -46,6 +46,24 @@ describe("sub(db, name, options)", function(){
     });
   })
 
+  it("should find the full path", function(){
+    var sub = sublevel(db, 'items');
+    var sub2 = sublevel(sub, 'posts');
+    var sub3 = sublevel(sub2, 'comments');
+    sub3.path.should.equal('items/posts/comments');
+  })
+
+})
+
+describe("top()", function(){
+
+  it("should return the top level instance", function(){
+    var sub = sublevel(db, 'items');
+    var sub2 = sublevel(sub, 'posts');
+    var sub3 = sublevel(sub2, 'comments');
+    sub3.top().should.equal(db);
+  })
+
 })
 
 describe("prefix(key)", function(){
@@ -105,7 +123,7 @@ describe("sublevel(name)", function(){
   it("should create a sublevel", function(){
     var sub = sublevel(db, 'items');
     var sub2 = sub.sublevel('posts');
-    sub2.prefix('foo').should.equal('posts/foo');
+    sub2.prefix('foo').should.equal('items/posts/foo');
   })
 
   it("should pass options", function(done){
@@ -278,6 +296,7 @@ describe("createReadStream(params)", function(){
   it("should only ReadStream from this sublevel", function(done){
     var sub = sublevel(db, 'items');
     db.put('not', 'this', function(err){
+      assert(null == err);
       sub.put('foo', 'bar', function(err){
         assert(null == err);
         sub.put('foz', 'baz', function(err){

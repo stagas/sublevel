@@ -39,8 +39,41 @@ var sep = '/';
 function Sub(db, path, options){
   if (!(this instanceof Sub)) return new Sub(db, path, options);
   this.parent = db;
-  this.path = path;
+  this.db = this.top();
+  this.path = this.pathJoin(path);
   this.options = options || {};
+}
+
+/**
+ * Gets topmost db instance.
+ *
+ * @return {LevelUP}
+ * @api private
+ */
+
+Sub.prototype.top = function(){
+  if (this.parent.top) {
+    return this.parent.top();
+  }
+  else {
+    return this.parent;
+  }
+};
+
+/**
+ * Join `path` with parent's when sublevel.
+ *
+ * @param {String} path
+ * @return {String}
+ */
+
+Sub.prototype.pathJoin = function(path){
+  if (this.parent.path) {
+    return this.parent.path + sep + path;
+  }
+  else {
+    return path;
+  }
 };
 
 /**
@@ -163,7 +196,7 @@ Sub.prototype.normalize = function(options, fn){
 
 Sub.prototype.put = function(key, value, options, fn){
   var args = this.normalize(options, fn);
-  return this.parent.put(this.prefix(key), value, args.options, args.fn);
+  return this.db.put(this.prefix(key), value, args.options, args.fn);
 };
 
 /**
@@ -177,7 +210,7 @@ Sub.prototype.put = function(key, value, options, fn){
 
 Sub.prototype.get = function(key, options, fn){
   var args = this.normalize(options, fn);
-  return this.parent.get(this.prefix(key), args.options, args.fn);
+  return this.db.get(this.prefix(key), args.options, args.fn);
 };
 
 /**
@@ -189,7 +222,7 @@ Sub.prototype.get = function(key, options, fn){
  */
 
 Sub.prototype.del = function(key, fn){
-  return this.parent.del(this.prefix(key), fn);
+  return this.db.del(this.prefix(key), fn);
 };
 
 /**
@@ -202,7 +235,7 @@ Sub.prototype.del = function(key, fn){
 
 Sub.prototype.createReadStream = function(options){
   options = this.prefixRange(options);
-  var stream = this.parent.createReadStream(options);
+  var stream = this.db.createReadStream(options);
   return stream.pipe(this.unprefixReadStream());
 };
 
@@ -216,7 +249,7 @@ Sub.prototype.createReadStream = function(options){
 
 Sub.prototype.createKeyStream = function(options){
   options = this.prefixRange(options);
-  var stream = this.parent.createKeyStream(options);
+  var stream = this.db.createKeyStream(options);
   return stream.pipe(this.unprefixKeyStream());
 };
 
@@ -230,7 +263,7 @@ Sub.prototype.createKeyStream = function(options){
 
 Sub.prototype.createValueStream = function(options){
   options = this.prefixRange(options);
-  var stream = this.parent.createValueStream(options);
+  var stream = this.db.createValueStream(options);
   return stream;
 };
 
@@ -243,7 +276,7 @@ Sub.prototype.createValueStream = function(options){
  */
 
 Sub.prototype.createWriteStream = function(options){
-  var stream = this.parent.createWriteStream(options);
+  var stream = this.db.createWriteStream(options);
   var prefix = this.prefixer();
   var write = stream.write;
   stream.write = function(data){

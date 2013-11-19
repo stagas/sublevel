@@ -1,4 +1,10 @@
 
+0.3.1 / 19-11-2013
+==================
+
+- Correct path generation. Fixes issue when initializing
+without path.
+
 0.3.0 / 19-11-2013
 ==================
 

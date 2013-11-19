@@ -30,7 +30,7 @@ var sep = '/';
 /**
  * Sub.
  *
- * @param {LevelUP} db
+ * @param {LevelUP|Sub} db
  * @param {String} path
  * @param {Object} [options]
  * @api public
@@ -119,12 +119,13 @@ Sub.prototype.unprefixKeyStream = function(){
  * Creates a new sublevel under this.
  *
  * @param {String} name
+ * @param {Object} [options]
  * @return {Sub}
  * @api public
  */
 
-Sub.prototype.sublevel = function(name){
-  return new Sub(this, name);
+Sub.prototype.sublevel = function(name, options){
+  return new Sub(this, name, combine(this.options, options || {}));
 };
 
 /**

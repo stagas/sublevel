@@ -108,6 +108,32 @@ describe("sublevel(name)", function(){
     sub2.prefix('foo').should.equal('posts/foo');
   })
 
+  it("should pass options", function(done){
+    var sub = sublevel(db, 'items');
+    var sub2 = sub.sublevel('posts', { valueEncoding: 'json' });
+    sub2.put('foo', { a: 'bar' }, function(err){
+      assert(null == err);
+      sub2.get('foo', function(err, data){
+        assert(null == err);
+        data.should.eql({ a: 'bar' });
+        done();
+      });
+    });
+  })
+
+  it("should combine options", function(done){
+    var sub = sublevel(db, 'items', { valueEncoding: 'json' });
+    var sub2 = sub.sublevel('posts');
+    sub2.put('foo', { a: 'bar' }, function(err){
+      assert(null == err);
+      sub2.get('foo', function(err, data){
+        assert(null == err);
+        data.should.eql({ a: 'bar' });
+        done();
+      });
+    });
+  })
+
 })
 
 describe("put(key, value, options, fn)", function(){

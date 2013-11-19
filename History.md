@@ -1,4 +1,9 @@
 
+0.0.3 / 18-11-2013
+==================
+
+- Pass options to constructor without using new.
+
 0.0.2 / 18-11-2013
 ==================
 

@@ -36,11 +36,11 @@ The following methods are compatible with a `level` db:
 
 `put`, `get`, `del`, `createReadStream`, `createKeyStream`, `createValueStream`, `createWriteStream`
 
-### Sub(db, name[, options])
+### Sub(db[, path][, options])
 
 Creates a new sublevel under `db`.
 
-### Sub#sublevel(name[, options])
+### Sub#sublevel(path[, options])
 
 Creates a new sublevel under this.
 

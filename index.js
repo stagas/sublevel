@@ -31,16 +31,20 @@ var sep = '/';
  * Sub.
  *
  * @param {LevelUP|Sub} db
- * @param {String} path
+ * @param {String} [path]
  * @param {Object} [options]
  * @api public
  */
 
 function Sub(db, path, options){
   if (!(this instanceof Sub)) return new Sub(db, path, options);
+  if ('object' == typeof path) {
+    options = path;
+    path = '';
+  }
   this.parent = db;
   this.db = this.top();
-  this.path = this.pathJoin(path);
+  this.path = this.pathJoin(path || '');
   this.options = options || {};
 }
 

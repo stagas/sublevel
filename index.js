@@ -37,7 +37,7 @@ var sep = '/';
  */
 
 function Sub(db, path, options){
-  if (!(this instanceof Sub)) return new Sub(db, path);
+  if (!(this instanceof Sub)) return new Sub(db, path, options);
   this.parent = db;
   this.path = path;
   this.options = options || {};

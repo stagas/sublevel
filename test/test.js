@@ -21,7 +21,7 @@ afterEach(function(done){
   });
 })
 
-describe("sub(db)", function(){
+describe("sub(db, name, options)", function(){
 
   it("should return an instance of Sub", function(){
     var sub = sublevel(db, 'items');
@@ -32,6 +32,18 @@ describe("sub(db)", function(){
     var sub = sublevel(db, 'items');
     var sub2 = sublevel(sub, 'posts');
     sub2.should.be.an.instanceof(sublevel);
+  })
+
+  it("should pass options", function(done){
+    var sub = sublevel(db, 'items', { valueEncoding: 'json' });
+    sub.put('foo', { a: 'bar' }, function(err){
+      assert(null == err);
+      sub.get('foo', function(err, data){
+        assert(null == err);
+        data.should.eql({ a: 'bar' });
+        done();
+      });
+    });
   })
 
 })

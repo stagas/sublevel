@@ -1,6 +1,6 @@
 {
   "name": "sublevel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": "https://github.com/stagas/sublevel",
   "description": "sublevels for levelup without the complexity",
   "keywords": ["level", "leveldb", "sublevel"],

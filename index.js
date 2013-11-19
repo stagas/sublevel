@@ -200,7 +200,7 @@ Sub.prototype.del = function(key, fn){
  */
 
 Sub.prototype.createReadStream = function(options){
-  this.prefixRange(options);
+  options = this.prefixRange(options);
   var stream = this.parent.createReadStream(options);
   return stream.pipe(this.unprefixReadStream());
 };
@@ -214,7 +214,7 @@ Sub.prototype.createReadStream = function(options){
  */
 
 Sub.prototype.createKeyStream = function(options){
-  this.prefixRange(options);
+  options = this.prefixRange(options);
   var stream = this.parent.createKeyStream(options);
   return stream.pipe(this.unprefixKeyStream());
 };
@@ -228,7 +228,7 @@ Sub.prototype.createKeyStream = function(options){
  */
 
 Sub.prototype.createValueStream = function(options){
-  this.prefixRange(options);
+  options = this.prefixRange(options);
   var stream = this.parent.createValueStream(options);
   return stream;
 };

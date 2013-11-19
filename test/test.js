@@ -237,6 +237,30 @@ describe("createReadStream(params)", function(){
     });
   })
 
+  it("should only ReadStream from this sublevel", function(done){
+    var sub = sublevel(db, 'items');
+    db.put('not', 'this', function(err){
+      sub.put('foo', 'bar', function(err){
+        assert(null == err);
+        sub.put('foz', 'baz', function(err){
+          assert(null == err);
+          var stream = sub.createReadStream();
+          var results = [];
+          stream.on('data', function(data){
+            results.push(data);
+          });
+          stream.on('end', function(){
+            results.should.eql([
+              { key: 'foo', value: 'bar' },
+              { key: 'foz', value: 'baz' }
+            ]);
+            done();
+          });
+        });
+      });
+    });
+  })
+
   it("should handle start range", function(done){
     var sub = sublevel(db, 'items');
     sub.put('foo', 'bar', function(err){

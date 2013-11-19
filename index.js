@@ -73,10 +73,10 @@ Sub.prototype.top = function(){
 
 Sub.prototype.pathJoin = function(path){
   if (this.parent.path) {
-    return this.parent.path + sep + path;
+    return this.parent.path + path + sep;
   }
   else {
-    return path;
+    return path + sep;
   }
 };
 
@@ -89,7 +89,7 @@ Sub.prototype.pathJoin = function(path){
  */
 
 Sub.prototype.prefix = function(key){
-  return this.path + sep + key;
+  return this.path + key;
 };
 
 /**
@@ -100,7 +100,7 @@ Sub.prototype.prefix = function(key){
  */
 
 Sub.prototype.prefixer = function(){
-  var prefix = this.path + sep;
+  var prefix = this.path;
   return function(key){
     return prefix + key;
   };
@@ -130,7 +130,7 @@ Sub.prototype.prefixRange = function(range){
  */
 
 Sub.prototype.unprefixReadStream = function(){
-  var len = (this.path + sep).length;
+  var len = this.path.length;
   return through(function(data){
     data.key = data.key.substr(len);
     this.queue(data);
@@ -145,7 +145,7 @@ Sub.prototype.unprefixReadStream = function(){
  */
 
 Sub.prototype.unprefixKeyStream = function(){
-  var len = (this.path + sep).length;
+  var len = this.path.length;
   return through(function(key){
     key = key.substr(len);
     this.queue(key);

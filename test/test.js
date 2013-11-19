@@ -31,26 +31,26 @@ describe("sub(db, name, options)", function(){
   it("should work without path", function(){
     var sub = sublevel(db);
     sub.should.be.an.instanceof(sublevel);
-    sub.path.should.equal('');
+    sub.path.should.equal('/');
   })
 
   it("should sublevel when no path", function(){
     var sub = sublevel(db);
     var sub2 = sub.sublevel('items');
-    sub2.path.should.equal('items');
+    sub2.path.should.equal('/items/');
   })
 
   it("should sublevel a sublevel when no path", function(){
     var sub = sublevel(db);
     var sub2 = sub.sublevel('items');
     var sub3 = sub2.sublevel('posts');
-    sub3.path.should.equal('items/posts');
+    sub3.path.should.equal('/items/posts/');
   })
 
   it("should work without path but with options", function(){
     var sub = sublevel(db, { valueEncoding: 'json' });
     sub.should.be.an.instanceof(sublevel);
-    sub.path.should.equal('');
+    sub.path.should.equal('/');
     sub.options.valueEncoding.should.equal('json');
   })
 
@@ -74,9 +74,11 @@ describe("sub(db, name, options)", function(){
 
   it("should find the full path", function(){
     var sub = sublevel(db, 'items');
+    sub.path.should.equal('items/');
     var sub2 = sublevel(sub, 'posts');
+    sub2.path.should.equal('items/posts/');
     var sub3 = sublevel(sub2, 'comments');
-    sub3.path.should.equal('items/posts/comments');
+    sub3.path.should.equal('items/posts/comments/');
   })
 
 })

@@ -31,26 +31,26 @@ describe("sub(db, name, options)", function(){
   it("should work without path", function(){
     var sub = sublevel(db);
     sub.should.be.an.instanceof(sublevel);
-    sub.path.should.equal('/');
+    sub.path.should.equal('\x00/');
   })
 
   it("should sublevel when no path", function(){
     var sub = sublevel(db);
     var sub2 = sub.sublevel('items');
-    sub2.path.should.equal('/items/');
+    sub2.path.should.equal('\x00/\x00items/');
   })
 
   it("should sublevel a sublevel when no path", function(){
     var sub = sublevel(db);
     var sub2 = sub.sublevel('items');
     var sub3 = sub2.sublevel('posts');
-    sub3.path.should.equal('/items/posts/');
+    sub3.path.should.equal('\x00/\x00items/\x00posts/');
   })
 
   it("should work without path but with options", function(){
     var sub = sublevel(db, { valueEncoding: 'json' });
     sub.should.be.an.instanceof(sublevel);
-    sub.path.should.equal('/');
+    sub.path.should.equal('\x00/');
     sub.options.valueEncoding.should.equal('json');
   })
 
@@ -74,11 +74,11 @@ describe("sub(db, name, options)", function(){
 
   it("should find the full path", function(){
     var sub = sublevel(db, 'items');
-    sub.path.should.equal('items/');
+    sub.path.should.equal('\x00items/');
     var sub2 = sublevel(sub, 'posts');
-    sub2.path.should.equal('items/posts/');
+    sub2.path.should.equal('\x00items/\x00posts/');
     var sub3 = sublevel(sub2, 'comments');
-    sub3.path.should.equal('items/posts/comments/');
+    sub3.path.should.equal('\x00items/\x00posts/\x00comments/');
   })
 
 })
@@ -98,7 +98,7 @@ describe("prefix(key)", function(){
 
   it("should return a prefixed key", function(){
     var sub = sublevel(db, 'items');
-    sub.prefix('foo').should.equal('items/foo');
+    sub.prefix('foo').should.equal('\x00items/foo');
   })
 
 })
@@ -111,8 +111,8 @@ describe("prefixRange(range)", function(){
       start: 'foo',
       end: 'foz'
     }).should.eql({
-      start: 'items/foo',
-      end: 'items/foz'
+      start: '\x00items/foo',
+      end: '\x00items/foz'
     });
   })
 
@@ -121,8 +121,8 @@ describe("prefixRange(range)", function(){
     sub.prefixRange({
       start: 'foo'
     }).should.eql({
-      start: 'items/foo',
-      end: 'items/\xff'
+      start: '\x00items/foo',
+      end: '\x00items/\xff'
     });
   })
 
@@ -131,16 +131,16 @@ describe("prefixRange(range)", function(){
     sub.prefixRange({
       end: 'foz'
     }).should.eql({
-      start: 'items/',
-      end: 'items/foz'
+      start: '\x00items/\x01',
+      end: '\x00items/foz'
     });
   })
 
   it("should prefix start & end range when both omitted", function(){
     var sub = sublevel(db, 'items');
     sub.prefixRange({}).should.eql({
-      start: 'items/',
-      end: 'items/\xff'
+      start: '\x00items/\x01',
+      end: '\x00items/\xff'
     });
   })
 
@@ -151,7 +151,7 @@ describe("sublevel(name)", function(){
   it("should create a sublevel", function(){
     var sub = sublevel(db, 'items');
     var sub2 = sub.sublevel('posts');
-    sub2.prefix('foo').should.equal('items/posts/foo');
+    sub2.prefix('foo').should.equal('\x00items/\x00posts/foo');
   })
 
   it("should pass options", function(done){
@@ -188,7 +188,7 @@ describe("put(key, value, options, fn)", function(){
     var sub = sublevel(db, 'items');
     sub.put('foo', 'bar', function(err){
       assert(null == err);
-      db.get('items/foo', function(err, data){
+      db.get('\x00items/foo', function(err, data){
         assert(null == err);
         data.should.equal('bar');
         done();
@@ -200,7 +200,7 @@ describe("put(key, value, options, fn)", function(){
     var sub = sublevel(db, 'items');
     sub.put('foo', { a: 'bar' }, { valueEncoding: 'json' }, function(err){
       assert(null == err);
-      db.get('items/foo', { valueEncoding: 'json' }, function(err, data){
+      db.get('\x00items/foo', { valueEncoding: 'json' }, function(err, data){
         assert(null == err);
         data.should.eql({ a: 'bar' });
         done();
@@ -213,7 +213,7 @@ describe("put(key, value, options, fn)", function(){
     var sub2 = sublevel(sub, 'posts');
     sub2.put('foo', 'bar', function(err){
       assert(null == err);
-      db.get('items/posts/foo', function(err, data){
+      db.get('\x00items/\x00posts/foo', function(err, data){
         assert(null == err);
         data.should.equal('bar');
         done();
@@ -241,7 +241,7 @@ describe("get(key, options, fn)", function(){
     var sub = sublevel(db, 'items');
     sub.put('foo', { a: 'bar' }, { valueEncoding: 'json' }, function(err){
       assert(null == err);
-      db.get('items/foo', { valueEncoding: 'json' }, function(err, data){
+      db.get('\x00items/foo', { valueEncoding: 'json' }, function(err, data){
         assert(null == err);
         data.should.eql({ a: 'bar' });
         done();
@@ -428,6 +428,28 @@ describe("createReadStream(params)", function(){
           results.should.eql([
             { key: 'foo', value: 'bar' },
             { key: 'foz', value: 'baz' }
+          ]);
+          done();
+        });
+      });
+    });
+  })
+
+  it("creating ReadStream on parent should not read sublevel's", function(done){
+    var sub = sublevel(db, 'items');
+    var sub2 = sublevel(sub, 'posts');
+    sub.put('foo', 'bar', function(err){
+      assert(null == err);
+      sub2.put('not', 'this', function(err){
+        assert(null == err);
+        var stream = sub.createReadStream();
+        var results = [];
+        stream.on('data', function(data){
+          results.push(data);
+        });
+        stream.on('end', function(){
+          results.should.eql([
+            { key: 'foo', value: 'bar' }
           ]);
           done();
         });

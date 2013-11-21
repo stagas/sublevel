@@ -44,7 +44,7 @@ function Sub(db, path, options){
   }
   this.parent = db;
   this.db = this.top();
-  this.path = this.pathJoin(path || '');
+  this.path = this.pathJoin('\x00' + (path || ''));
   this.options = options || {};
 }
 
@@ -116,7 +116,7 @@ Sub.prototype.prefixer = function(){
 
 Sub.prototype.prefixRange = function(range){
   range = range || {};
-  range.start = this.prefix(range.start || '');
+  range.start = this.prefix(range.start || '\x01');
   range.end = this.prefix(range.end || '\xff');
   return range;
 };

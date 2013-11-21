@@ -89,7 +89,7 @@ Sub.prototype.pathJoin = function(path){
  */
 
 Sub.prototype.prefix = function(key){
-  return this.path + key;
+  return this.path + '\x01' + key;
 };
 
 /**
@@ -100,7 +100,7 @@ Sub.prototype.prefix = function(key){
  */
 
 Sub.prototype.prefixer = function(){
-  var prefix = this.path;
+  var prefix = this.path + '\x01';
   return function(key){
     return prefix + key;
   };
@@ -116,7 +116,7 @@ Sub.prototype.prefixer = function(){
 
 Sub.prototype.prefixRange = function(range){
   range = range || {};
-  range.start = this.prefix(range.start || '\x01');
+  range.start = this.prefix(range.start || '');
   range.end = this.prefix(range.end || '\xff');
   return range;
 };
@@ -130,7 +130,7 @@ Sub.prototype.prefixRange = function(range){
  */
 
 Sub.prototype.unprefixReadStream = function(){
-  var len = this.path.length;
+  var len = this.path.length + 1;
   return through(function(data){
     data.key = data.key.substr(len);
     this.queue(data);
@@ -145,7 +145,7 @@ Sub.prototype.unprefixReadStream = function(){
  */
 
 Sub.prototype.unprefixKeyStream = function(){
-  var len = this.path.length;
+  var len = this.path.length + 1;
   return through(function(key){
     key = key.substr(len);
     this.queue(key);

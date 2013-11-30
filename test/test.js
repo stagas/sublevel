@@ -297,6 +297,56 @@ describe("del(key, fn)", function(){
 
 })
 
+describe("batch(ops)", function(){
+
+  it("should execute batch operations", function(done){
+    var sub = sublevel(db, 'items');
+    sub.batch([
+      { type: 'put', key: 'foo', value: 'bar' },
+      { type: 'put', key: 'foz', value: 'baz' },
+      { type: 'put', key: 'delete', value: 'me' },
+      { type: 'del', key: 'delete' }
+    ], function(err){
+      var stream = sub.createReadStream();
+      var results = [];
+      stream.on('data', function(data){
+        results.push(data);
+      });
+      stream.on('end', function(){
+        results.should.eql([
+          { key: 'foo', value: 'bar' },
+          { key: 'foz', value: 'baz' }
+        ]);
+        done();
+      });
+    });
+  })
+
+  it("should execute batch operations", function(done){
+    var sub = sublevel(db, 'items');
+    sub.batch()
+    .put('foo', 'bar')
+    .put('foz', 'baz')
+    .put('delete', 'me')
+    .del('delete')
+    .write(function(err){
+      var stream = sub.createReadStream();
+      var results = [];
+      stream.on('data', function(data){
+        results.push(data);
+      });
+      stream.on('end', function(){
+        results.should.eql([
+          { key: 'foo', value: 'bar' },
+          { key: 'foz', value: 'baz' }
+        ]);
+        done();
+      });
+    });
+  })
+
+})
+
 describe("createReadStream(params)", function(){
 
   it("should create a ReadStream in sublevel", function(done){

@@ -230,6 +230,59 @@ Sub.prototype.del = function(key, fn){
 };
 
 /**
+ * Create batch operations `ops`.
+ *
+ * Borrowed from https://github.com/juliangruber/level-prefix
+ *
+ * @param {Array} ops
+ * @param {Object} options
+ * @param {Function} fn
+ * @return {Object}
+ * @api public
+ */
+
+Sub.prototype.batch = function(ops, options, fn){
+  if (!arguments.length) {
+    return this.decorateChainedBatch(this.db.batch());
+  }
+
+  var args = this.normalize(options, fn);
+  var prefix = this.prefixer();
+
+  ops.forEach(function(op){
+    op.key = prefix(op.key);
+  });
+
+  this.db.batch(ops, args.options, args.fn);
+};
+
+/**
+ * Decorate chained batch
+ *
+ * Borrowed from https://github.com/juliangruber/level-prefix
+ *
+ * @param {Object} batch
+ * @api private
+ */
+
+Sub.prototype.decorateChainedBatch = function(batch){
+  var prefix = this.prefixer();
+  var methods = ['put', 'del'];
+
+  methods.forEach(function(method){
+    var original = batch[method];
+
+    batch[method] = function(){
+      var args = [].slice.call(arguments);
+      args[0] = prefix(args[0]);
+      return original.apply(batch, args);
+    };
+  });
+
+  return batch;
+};
+
+/**
  * Creates a ReadStream.
  *
  * @param {Object} [options]

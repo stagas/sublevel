@@ -34,7 +34,7 @@ var comments = posts.sublevel('comments');
 
 The following methods are compatible with a `level` db:
 
-`put`, `get`, `del`, `createReadStream`, `createKeyStream`, `createValueStream`, `createWriteStream`
+`put`, `get`, `del`, `batch`, `createReadStream`, `createKeyStream`, `createValueStream`, `createWriteStream`
 
 ### Sub(db[, path][, options])
 

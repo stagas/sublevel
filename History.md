@@ -1,4 +1,10 @@
 
+2.1.0 / 30-11-2013
+==================
+
+- Add `.batch()`. Implementation borrowed
+from https://github.com/juliangruber/level-prefix
+
 2.0.0 / 21-11-2013
 ==================
 

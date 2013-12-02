@@ -322,6 +322,39 @@ describe("batch(ops)", function(){
     });
   })
 
+  it("should execute batch operations across sublevels", function(done){
+    var sub = sublevel(db, 'items');
+    var sub2 = sublevel(db, 'users');
+    sub.batch([
+      { type: 'put', key: 'foo', value: 'bar' },
+      { type: 'put', key: 'foz', value: 'baz', prefix: sub2 },
+      { type: 'put', key: 'delete', value: 'me' },
+      { type: 'del', key: 'delete' }
+    ], function(err){
+      var stream = sub.createReadStream();
+      var results = [];
+      stream.on('data', function(data){
+        results.push(data);
+      });
+      stream.on('end', function(){
+        results.should.eql([
+          { key: 'foo', value: 'bar' }
+        ]);
+        var stream = sub2.createReadStream();
+        results = [];
+        stream.on('data', function(data){
+          results.push(data);
+        });
+        stream.on('end', function(){
+          results.should.eql([
+            { key: 'foz', value: 'baz' }
+          ]);
+          done();
+        });
+      });
+    });
+  })
+
   it("should execute batch operations", function(done){
     var sub = sublevel(db, 'items');
     sub.batch()

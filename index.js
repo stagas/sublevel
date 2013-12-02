@@ -250,7 +250,9 @@ Sub.prototype.batch = function(ops, options, fn){
   var prefix = this.prefixer();
 
   ops.forEach(function(op){
-    op.key = prefix(op.key);
+    op.key = op.prefix
+      ? op.prefix.prefix(op.key)
+      : prefix(op.key);
   });
 
   this.db.batch(ops, args.options, args.fn);

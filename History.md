@@ -1,4 +1,10 @@
 
+2.2.0 / 02-12-2013
+==================
+
+- Support `prefix` in `.batch(ops)` for batch operations
+across sublevels.
+
 2.1.0 / 30-11-2013
 ==================
 

@@ -355,7 +355,7 @@ describe("batch(ops)", function(){
     });
   })
 
-  it("should execute batch operations", function(done){
+  it("should execute fluent api batch operations", function(done){
     var sub = sublevel(db, 'items');
     sub.batch()
     .put('foo', 'bar')

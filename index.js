@@ -14,6 +14,7 @@
  */
 
 var fix = require('level-fix-range');
+var extend = require('xtend');
 var through = require('through');
 
 /**
@@ -295,6 +296,7 @@ Sub.prototype.decorateChainedBatch = function(batch){
 
 Sub.prototype.createReadStream = function(options){
   options = this.prefixRange(options);
+  options = extend(this.options, options);
   var stream = this.db.createReadStream(options);
   return stream.pipe(this.unprefixReadStream());
 };
@@ -309,6 +311,7 @@ Sub.prototype.createReadStream = function(options){
 
 Sub.prototype.createKeyStream = function(options){
   options = this.prefixRange(options);
+  options = extend(this.options, options);
   var stream = this.db.createKeyStream(options);
   return stream.pipe(this.unprefixKeyStream());
 };
@@ -323,6 +326,7 @@ Sub.prototype.createKeyStream = function(options){
 
 Sub.prototype.createValueStream = function(options){
   options = this.prefixRange(options);
+  options = extend(this.options, options);
   var stream = this.db.createValueStream(options);
   return stream;
 };
@@ -336,6 +340,7 @@ Sub.prototype.createValueStream = function(options){
  */
 
 Sub.prototype.createWriteStream = function(options){
+  options = extend(this.options, options);
   var stream = this.db.createWriteStream(options);
   var prefix = this.prefixer();
   var write = stream.write;

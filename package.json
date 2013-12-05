@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
+    "xtend": "~2.1.1",
     "through": "~2.3.4",
     "level-fix-range": "~2.0.0"
   },

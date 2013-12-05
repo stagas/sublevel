@@ -404,6 +404,28 @@ describe("createReadStream(params)", function(){
     });
   })
 
+  it("should work with `reverse: true`", function(done){
+    var sub = sublevel(db, 'items');
+    sub.put('foo', 'bar', function(err){
+      assert(null == err);
+      sub.put('foz', 'baz', function(err){
+        assert(null == err);
+        var stream = sub.createReadStream({ reverse: true });
+        var results = [];
+        stream.on('data', function(data){
+          results.push(data);
+        });
+        stream.on('end', function(){
+          results.should.eql([
+            { key: 'foz', value: 'baz' },
+            { key: 'foo', value: 'bar' }
+          ]);
+          done();
+        });
+      });
+    });
+  })
+
   it("should only ReadStream from this sublevel", function(done){
     var sub = sublevel(db, 'items');
     db.put('not', 'this', function(err){

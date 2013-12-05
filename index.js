@@ -13,6 +13,7 @@
  * Module dependencies.
  */
 
+var fix = require('level-fix-range');
 var through = require('through');
 
 /**
@@ -118,7 +119,7 @@ Sub.prototype.prefixRange = function(range){
   range = range || {};
   range.start = this.prefix(range.start || '');
   range.end = this.prefix(range.end || '\xff');
-  return range;
+  return fix(range);
 };
 
 /**

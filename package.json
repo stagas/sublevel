@@ -8,7 +8,8 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
-    "through": "~2.3.4"
+    "through": "~2.3.4",
+    "level-fix-range": "~2.0.0"
   },
   "devDependencies": {
     "level": "~0.18.0",

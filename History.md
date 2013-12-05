@@ -1,4 +1,10 @@
 
+2.2.1 / 05-12-2013
+==================
+
+- Fix `reverse: true`.
+- Range streams now use sublevel options.
+
 2.2.0 / 02-12-2013
 ==================
 

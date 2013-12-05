@@ -164,7 +164,7 @@ Sub.prototype.unprefixKeyStream = function(){
  */
 
 Sub.prototype.sublevel = function(name, options){
-  return new Sub(this, name, combine(this.options, options || {}));
+  return new Sub(this, name, extend(this.options, options));
 };
 
 /**
@@ -184,7 +184,7 @@ Sub.prototype.normalize = function(options, fn){
     args.fn = options;
   }
   else {
-    args.options = combine(this.options, options);
+    args.options = extend(this.options, options);
     args.fn = fn;
   }
   return args;
@@ -350,19 +350,3 @@ Sub.prototype.createWriteStream = function(options){
   };
   return stream;
 };
-
-/**
- * Combines `a` and `b` into a new object.
- *
- * @param {Object} a
- * @param {Object} b
- * @return {Object}
- * @api private
- */
-
-function combine(a, b){
-  var c = {};
-  for (var key in a) c[key] = a[key];
-  for (var key in b) c[key] = b[key];
-  return c;
-}

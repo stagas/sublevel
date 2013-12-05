@@ -404,6 +404,28 @@ describe("createReadStream(params)", function(){
     });
   })
 
+  it("should use sublevel options", function(done){
+    var sub = sublevel(db, 'items', { valueEncoding: 'json' });
+    sub.put('foo', { bar: 'bar' }, function(err){
+      assert(null == err);
+      sub.put('foz', { baz: 'baz' }, function(err){
+        assert(null == err);
+        var stream = sub.createReadStream();
+        var results = [];
+        stream.on('data', function(data){
+          results.push(data);
+        });
+        stream.on('end', function(){
+          results.should.eql([
+            { key: 'foo', value: { bar: 'bar' } },
+            { key: 'foz', value: { baz: 'baz' } }
+          ]);
+          done();
+        });
+      });
+    });
+  })
+
   it("should work with `reverse: true`", function(done){
     var sub = sublevel(db, 'items');
     sub.put('foo', 'bar', function(err){

@@ -223,12 +223,14 @@ Sub.prototype.get = function(key, options, fn){
  * Delete a `key` from the db.
  *
  * @param {Mixed} key
+ * @param {Object} [options]
  * @param {Function} fn
  * @api public
  */
 
-Sub.prototype.del = function(key, fn){
-  return this.db.del(this.prefix(key), fn);
+Sub.prototype.del = function(key, options, fn){
+  var args = this.normalize(options, fn);
+  return this.db.del(this.prefix(key), args.options, args.fn);
 };
 
 /**

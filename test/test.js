@@ -280,6 +280,25 @@ describe("del(key, fn)", function(){
     });
   })
 
+  it("should accept options", function(done){
+    var sub = sublevel(db, 'items');
+    var opts = { keyEncoding: 'json' };
+    sub.put({ foo: 'bar' }, 'bar', opts, function(err){
+      assert(null == err);
+      sub.get({ foo: 'bar' }, opts, function(err, data){
+        assert(null == err);
+        data.should.equal('bar');
+        sub.del({ foo: 'bar' }, opts, function(err){
+          assert(null == err);
+          sub.get({ foo: 'bar' }, opts, function(err, data){
+            err.type.should.equal('NotFoundError');
+            done();
+          });
+        });
+      });
+    });
+  })
+
   it("should del from deep sublevel", function(done){
     var sub = sublevel(db, 'items');
     var sub2 = sublevel(sub, 'posts');

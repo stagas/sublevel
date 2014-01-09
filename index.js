@@ -1,4 +1,3 @@
-
 /*!
  *
  * sublevel
@@ -18,7 +17,6 @@ var extend = require('xtend');
 var through = require('through');
 var util = require("util");
 var events = require("events");
-var propagate = require("propagate");
 
 /**
  * Expose `Sub`.
@@ -53,7 +51,6 @@ function Sub(db, path, options){
   this.options = options || {};
 
   events.EventEmitter.call(this);
-  propagate(db, this)
 }
 
 util.inherits(Sub, events.EventEmitter);

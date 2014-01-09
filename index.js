@@ -1,4 +1,3 @@
-
 /*!
  *
  * sublevel
@@ -16,6 +15,8 @@
 var fix = require('level-fix-range');
 var extend = require('xtend');
 var through = require('through');
+var util = require("util");
+var events = require("events");
 
 /**
  * Expose `Sub`.
@@ -48,7 +49,11 @@ function Sub(db, path, options){
   this.db = this.top();
   this.path = this.pathJoin('\x00' + (path || ''));
   this.options = options || {};
+
+  events.EventEmitter.call(this);
 }
+
+util.inherits(Sub, events.EventEmitter);
 
 /**
  * Gets topmost db instance.

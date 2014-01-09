@@ -3,7 +3,11 @@
   "version": "2.3.0",
   "repository": "https://github.com/stagas/sublevel",
   "description": "sublevels for levelup without the complexity",
-  "keywords": ["level", "leveldb", "sublevel"],
+  "keywords": [
+    "level",
+    "leveldb",
+    "sublevel"
+  ],
   "author": "stagas <gstagas@gmail.com>",
   "license": "MIT",
   "main": "index.js",
@@ -16,5 +20,7 @@
     "level": "~0.18.0",
     "should": "~2.1.0"
   },
-  "engines": { "node": "*" }
+  "engines": {
+    "node": "*"
+  }
 }

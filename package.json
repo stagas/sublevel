@@ -3,18 +3,25 @@
   "version": "2.3.0",
   "repository": "https://github.com/stagas/sublevel",
   "description": "sublevels for levelup without the complexity",
-  "keywords": ["level", "leveldb", "sublevel"],
+  "keywords": [
+    "level",
+    "leveldb",
+    "sublevel"
+  ],
   "author": "stagas <gstagas@gmail.com>",
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
     "xtend": "~2.1.1",
     "through": "~2.3.4",
-    "level-fix-range": "~2.0.0"
+    "level-fix-range": "~2.0.0",
+    "propagate": "~0.2.2"
   },
   "devDependencies": {
     "level": "~0.18.0",
     "should": "~2.1.0"
   },
-  "engines": { "node": "*" }
+  "engines": {
+    "node": "*"
+  }
 }

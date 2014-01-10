@@ -28,6 +28,11 @@ describe("sub(db, name, options)", function(){
     sub.should.be.an.instanceof(sublevel);
   })
 
+  it("should inherit from EventEmitter", function(){
+    var sub = sublevel(db, 'items');
+    sub.should.be.an.instanceof(require('events').EventEmitter);
+  })
+
   it("should work without path", function(){
     var sub = sublevel(db);
     sub.should.be.an.instanceof(sublevel);

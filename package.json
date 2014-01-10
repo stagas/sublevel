@@ -1,8 +1,8 @@
 {
   "name": "sublevel",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "repository": "https://github.com/stagas/sublevel",
-  "description": "sublevels for levelup without the complexity",
+  "description": "sublevels for levelup",
   "keywords": ["level", "leveldb", "sublevel"],
   "author": "stagas <gstagas@gmail.com>",
   "license": "MIT",

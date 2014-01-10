@@ -3,7 +3,7 @@
  *
  * sublevel
  *
- * sublevels for levelup without the complexity
+ * sublevels for levelup
  *
  * MIT
  *
